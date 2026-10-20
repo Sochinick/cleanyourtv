@@ -1,0 +1,59 @@
+# TCL G13 Smart TV (reports as "Smart TV"; device G13, product G13_2K_GB, MediaTek MT5867)
+# Google TV on Android 14 (SDK 34), build UKN2.241110.001 AU13, security patch 2026-06-01.
+# Same MediaTek MT5867 platform as the CHiQ GTVU65 but with a different TCL-specific package set.
+# Tested 2026-10-20 on a real unit: Wi-Fi, Home button, Input/Source key, Netflix, Canal+, Amazon
+# Prime Video, Plex, Arte, Google Assistant (mic button) and HDMI all kept working. Launcher works.
+#
+# Apply:  TV_HOST=<tv ip> tools/disable.sh examples/tcl-g13-google-tv/debloat.txt
+# Undo:   TV_HOST=<tv ip> tools/restore.sh examples/tcl-g13-google-tv/debloat.txt com.google.android.apps.tv.launcherx
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Stock launcher: com.google.android.apps.tv.launcherx. Pass it to restore.sh.
+# setupwraith (com.google.android.tungsten.setupwraith) was already disabled at the factory on this
+# unit; its RecoveryActivity claims HOME at priority 1 once launcherx is disabled — list it anyway
+# so restore.sh re-enables it correctly.
+#
+# com.gathin.tvhome was pre-installed on this unit (disabled). Re-enable it, then run
+# launcher/build-and-install.sh with STOCK_LAUNCHER=com.google.android.apps.tv.launcherx to set it
+# as HOME and disable launcherx. INPUT_KEY_SERVICE=1 is needed for the Source/Input key to keep
+# working from any app once launcherx is gone.
+#
+# DO NOT DISABLE (essential on this platform):
+#   com.tcl.suspension          → Quick Panel + Source/Input key
+#   com.tcl.keyhelp             → virtual remote keys overlay
+#   com.tcl.factory.view        → factory safe-mode dependency
+#   com.mediatek.tvinput        → tuner + HDMI + AV inputs
+#   com.mediatek.tv.service     → MediaTek TV framework
+#   com.mediatek.wwtv.tvcenter  → MediaTek TV center
+#   com.google.android.gms      → Play Services
+#   com.android.vending         → Play Store
+#   com.google.android.tv.remote.service → remote pairing
+#
+# Kept by choice: com.tcl.ttvs (firmware updater), com.google.android.katniss (Google Assistant),
+# Netflix, Canal+, Amazon Prime Video, Plex, Arte, com.africa.elephtvplus.
+# Already disabled at the factory: com.google.android.tungsten.setupwraith.
+
+# ── 1. Telemetry & analytics ──────────────────────────────────────────────────
+com.tcl.guard                              # TGuard device-use tracking
+com.tcl.useragreement                      # privacy-agreement proxy for ttvs
+com.tcl.logkit                             # TCL log kit (analytics upload)
+com.google.android.feedback                # Google crash reporting
+com.google.android.partnersetup            # Google partner onboarding
+com.google.android.onetimeinitializer      # one-time Google init service
+
+# ── 2. Ads, content rows & promos ─────────────────────────────────────────────
+com.tcl.waterfall.overseas                 # content "waterfall" recommendation rows
+com.tcl.partnercustomizer                  # TCL ad rows injected into Google TV Home
+com.tcl.messagebox                         # pushed promo messages
+
+# ── 3. Demo & factory leftovers ───────────────────────────────────────────────
+com.mediatek.MtkDemo                       # MediaTek demo app
+com.mediatek.wwtv.setupwizard              # MediaTek first-run setup wizard
+fusion.android.tv.demo                     # generic demo app
+mediatek.factorymenu.ui                    # factory menu (hidden, safe to disable)
+
+# ── 4. Launcher handover ──────────────────────────────────────────────────────
+# setupwraith was already disabled at the factory on this unit; listed so restore.sh brings it back.
+com.google.android.tungsten.setupwraith    # Google TV setup wizard (RecoveryActivity claims HOME)
+com.google.android.apps.tv.launcherx      # stock Google TV launcher (replaced by com.gathin.tvhome)
+com.google.android.apps.tv.dreamx         # Google ambient screensaver (replaced by launcher clock)
